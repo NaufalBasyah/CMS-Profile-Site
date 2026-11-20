@@ -7,6 +7,7 @@ import { useState } from "react";
 import { buttonVariants } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
+import { MAIN_ACTION } from "./blocks";
 import { Brand } from "./brand";
 import { NAV } from "./nav";
 
@@ -32,18 +33,18 @@ export function SiteHeader({ path }: { path: string }) {
               key={item.href}
               href={item.href}
               aria-current={isCurrent(path, item.href) ? "page" : undefined}
-              className="relative rounded-md px-3 py-2 text-[0.95rem] font-medium text-foreground no-underline transition-colors hover:text-primary aria-[current=page]:text-primary aria-[current=page]:after:absolute aria-[current=page]:after:inset-x-3 aria-[current=page]:after:-bottom-[0.95rem] aria-[current=page]:after:h-0.5 aria-[current=page]:after:bg-primary"
+              className="relative flex min-h-11 items-center rounded-md px-3 text-[0.95rem] font-medium text-foreground no-underline transition-colors hover:text-primary aria-[current=page]:text-primary aria-[current=page]:after:absolute aria-[current=page]:after:inset-x-3 aria-[current=page]:after:-bottom-[0.6rem] aria-[current=page]:after:h-0.5 aria-[current=page]:after:bg-primary"
             >
               {item.label}
             </Link>
           ))}
-          <Link href="/partnership" className={cn(buttonVariants({ size: "sm" }), "ml-3 no-underline")}>
-            Become a partner
+          <Link href={MAIN_ACTION.href} className={cn(buttonVariants(), "ml-3 no-underline")}>
+            {MAIN_ACTION.label}
           </Link>
         </nav>
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger
-            className={cn(buttonVariants({ variant: "ghost", size: "icon" }), "lg:hidden")}
+            className={cn(buttonVariants({ variant: "ghost", size: "icon" }), "size-11 lg:hidden")}
             aria-label="Open menu"
           >
             <MenuIcon className="size-6" />
@@ -60,14 +61,14 @@ export function SiteHeader({ path }: { path: string }) {
                   href={item.href}
                   onClick={close}
                   aria-current={isCurrent(path, item.href) ? "page" : undefined}
-                  className="border-b py-3.5 text-lg font-medium text-heading no-underline aria-[current=page]:text-primary"
+                  className="flex min-h-12 items-center border-b text-lg font-medium text-heading no-underline aria-[current=page]:text-primary"
                 >
                   {item.label}
                 </Link>
               ))}
             </nav>
-            <Link href="/partnership" onClick={close} className={cn(buttonVariants(), "mt-4 no-underline")}>
-              Become a partner
+            <Link href={MAIN_ACTION.href} onClick={close} className={cn(buttonVariants(), "mt-4 no-underline")}>
+              {MAIN_ACTION.label}
             </Link>
           </SheetContent>
         </Sheet>

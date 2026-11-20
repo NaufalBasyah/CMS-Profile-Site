@@ -38,14 +38,14 @@ export default async function Dashboard() {
             <p className="font-display text-3xl text-heading">{fresh} new {fresh === 1 ? "inquiry" : "inquiries"}</p>
             <p className="text-sm text-muted-foreground">From the partnership form on the website.</p>
           </div>
-          <Link href="/admin/inquiries" className="font-semibold">Open inquiries →</Link>
+          <Link href="/admin/inquiries" className="font-semibold">Open inquiries</Link>
         </CardContent>
         {recent.length > 0 && (
           <ul className="divide-y border-t">
             {recent.map((r) => (
               <li key={r.id}>
                 <Link href={`/admin/inquiries/${r.id}`} className="flex items-center justify-between gap-4 px-6 py-3 text-sm no-underline hover:bg-muted/50">
-                  <span><b className="text-heading">{r.company}</b> <span className="text-muted-foreground">· {r.name} · {r.interest}</span></span>
+                  <span><b className="text-heading">{r.company}</b> <span className="block text-muted-foreground sm:inline sm:pl-2">{r.name}{r.interest && `, ${r.interest}`}</span></span>
                   {r.status === "New" && <Badge variant="warning">New</Badge>}
                 </Link>
               </li>

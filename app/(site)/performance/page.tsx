@@ -8,7 +8,7 @@ import { getPerformance, getSettings } from "@/lib/content";
 import { MONTHS } from "@/lib/utils";
 
 export const metadata: Metadata = {
-  title: "Performance",
+  title: "Production and sales figures",
   description: "Production, sales and markets: annual figures, the current period by month, and share of sales by country.",
 };
 
@@ -55,7 +55,7 @@ async function Performance({ searchParams }: { searchParams: PageProps<"/perform
 
   return (
     <>
-      <PageHero title="Performance and growth" eyebrow={first && last ? `${first}–${last} and this year` : "Figures"}>
+      <PageHero title={first && last ? `Production, sales and markets, ${first} to today` : "Production, sales and markets"}>
         <p>{s.performance_intro}</p>
       </PageHero>
       <Section className="pt-10 sm:pt-12 lg:pt-14">

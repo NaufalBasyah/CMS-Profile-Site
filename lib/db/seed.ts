@@ -14,7 +14,7 @@
  *
  * Items marked SAMPLE (contact details, certifications, news) are mockup content.
  */
-import { sql } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import type { DB } from "./index";
 import * as t from "./schema";
 import { hashPassword } from "../auth/password";
@@ -57,10 +57,10 @@ export const SETTINGS: SettingRow[] = [
     "and where our sales go."],
   ["show_figures_notice", "Show the 'illustrative figures' notice on the Performance page", "Performance page", "bool", "1"],
   // SAMPLE contact details
-  ["address", "Address", "Contact", "textarea",
-    "Kawasan Industri Medan (KIM), Jl. Pulau Sumatra\nMedan 20242, North Sumatra, Indonesia"],
-  ["phone", "Phone", "Contact", "text", "+62 61 6874 000"],
-  ["email", "Sales email", "Contact", "text", "sales@cms-chem.example"],
+  // SAMPLE contact details: deliberately unreachable. Replace with the real ones in Site settings.
+  ["address", "Address", "Contact", "textarea", "Kawasan Industri Medan (KIM)\nMedan, North Sumatra, Indonesia"],
+  ["phone", "Phone", "Contact", "text", "+62 61 0000 0000"],
+  ["email", "Sales email", "Contact", "text", "sales@cms-chemical.example"],
   ["office_hours", "Office hours", "Contact", "text", "Monday to Friday, 08:00–17:00 WIB"],
   ["show_demo_notice", "Show the sample-content notice in the footer", "Site", "bool", "1"],
 ];
@@ -183,12 +183,35 @@ const NEWS = [ // SAMPLE
       "HI-LUB at our Medan plant." },
 ];
 
+/**
+ * Earlier sample values that must not stay live: a real-format phone number, a
+ * street address with postcode and the shortened company name. Each is replaced
+ * only while it still holds exactly the old sample text, so real details typed
+ * into Site settings are never touched.
+ */
+const RETIRED_SAMPLES: [key: string, oldValue: string][] = [
+  ["phone", "+62 61 6874 000"],
+  ["address", "Kawasan Industri Medan (KIM), Jl. Pulau Sumatra\nMedan 20242, North Sumatra, Indonesia"],
+  ["email", "sales@cms-chem.example"],
+  ["short_name", "PT. CMS Chem Indonesia"],
+];
+
 export async function seed(db: DB): Promise<void> {
   // Settings: add any keys that are missing (new settings appear after an upgrade).
   await db
     .insert(t.settings)
     .values(SETTINGS.map(([key, label, group, kind, value], sort) => ({ key, label, group, kind, value, sort })))
     .onConflictDoNothing({ target: t.settings.key });
+
+  for (const [key, oldValue] of RETIRED_SAMPLES) {
+    const fresh = SETTINGS.find(([k]) => k === key)?.[4];
+    if (fresh !== undefined) {
+      await db
+        .update(t.settings)
+        .set({ value: fresh })
+        .where(and(eq(t.settings.key, key), eq(t.settings.value, oldValue)));
+    }
+  }
 
   const [{ n: userCount }] = await db.select({ n: sql<number>`count(*)::int` }).from(t.users);
   if (userCount === 0) {

@@ -67,8 +67,8 @@ export function InquiryForm({ grades, interest }: { grades: string[]; interest: 
           <Textarea id="message" name="message" defaultValue={v.message} />
         </Field>
       </div>
-      <Button type="submit" size="lg" disabled={pending}>
-        {pending ? "Sending…" : "Send inquiry"}
+      <Button type="submit" size="lg" disabled={pending} className="w-full sm:w-auto">
+        {pending ? "Sending…" : "Send an inquiry"}
       </Button>
     </form>
   );

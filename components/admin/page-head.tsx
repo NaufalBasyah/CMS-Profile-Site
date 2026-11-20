@@ -10,7 +10,7 @@ export async function PageHead({
   return (
     <>
       <Flash message={flash} />
-      {back && <Link href={back.href} className="text-sm font-semibold">← {back.label}</Link>}
+      {back && <Link href={back.href} className="text-sm font-semibold">Back to {back.label.toLowerCase()}</Link>}
       <div className="mt-1 mb-6 flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="text-4xl">{title}</h1>
