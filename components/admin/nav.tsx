@@ -51,7 +51,7 @@ function Links({ path, onNavigate }: { path: string; onNavigate?: () => void }) 
 export function AdminSidebar({ path }: { path: string }) {
   return (
     <aside className="hidden w-60 shrink-0 bg-indigo-deep px-3 py-6 lg:block">
-      <p className="mb-6 px-3 font-display text-xl text-white">CMS Chem admin</p>
+      <p className="mb-6 px-3 font-display text-xl text-white">CMS Chemical admin</p>
       <Links path={path} />
     </aside>
   );
@@ -70,7 +70,7 @@ export function AdminMobileNav() {
         <MenuIcon className="size-5" />
       </SheetTrigger>
       <SheetContent className="bg-indigo-deep text-white [&>button]:text-white [&>button:hover]:bg-white/10">
-        <SheetTitle className="font-display text-xl text-white">CMS Chem admin</SheetTitle>
+        <SheetTitle className="font-display text-xl text-white">CMS Chemical admin</SheetTitle>
         <div className="overflow-y-auto">
           <Links path={path} onNavigate={() => setOpen(false)} />
         </div>

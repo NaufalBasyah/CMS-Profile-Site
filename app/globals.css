@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* PT. CMS Chem Indonesia
+/* PT. CMS Chemical Indonesia
    Palette from the company logo: indigo swoosh, palm green, oxide red.
    Tokens follow shadcn/ui names so copied components pick them up. */
 :root {

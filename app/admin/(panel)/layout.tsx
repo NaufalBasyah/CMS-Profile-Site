@@ -21,7 +21,7 @@ export default function AdminLayout({ children }: LayoutProps<"/admin">) {
             <Suspense>
               <AdminMobileNav />
             </Suspense>
-            <span className="font-display text-lg text-heading lg:hidden">CMS Chem admin</span>
+            <span className="font-display text-lg text-heading lg:hidden">CMS Chemical admin</span>
           </div>
           <form action={logout}>
             <Button type="submit" variant="outline" size="sm">Sign out</Button>

@@ -57,7 +57,7 @@ async function Home() {
           <figure className="overflow-hidden rounded-lg border border-white/15 bg-white/5 shadow-2xl shadow-black/30">
             <Image
               src="/img/factory.jpg"
-              alt="The CMS Chem factory entrance in Medan with a delivery truck at the gate"
+              alt="The CMS Chemical factory entrance in Medan with a delivery truck at the gate"
               width={1287}
               height={484}
               priority

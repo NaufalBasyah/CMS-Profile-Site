@@ -1,6 +1,6 @@
 # CMS Profile Site
 
-Company website for **PT. Choyang Mopoli Samsung Chemical Indonesia** (PT. CMS Chem), with a built-in admin panel for editing every piece of content without touching code.
+Company website for **PT. Choyang Mopoli Samsung Chemical Indonesia** (PT. CMS Chemical), with a built-in admin panel for editing every piece of content without touching code.
 
 - **Public site:** Home, About, Products (HI-LUB grades), Operations, Performance, Markets, News, Partnership (inquiry form)
 - **Admin panel:** `/admin`. Edit company details, products, history, clients, news and the Performance figures; read inquiries from the website.
