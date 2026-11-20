@@ -24,14 +24,14 @@ export async function SiteFooter() {
             </a>
           </p>
         </div>
-        <FooterList title="Company" links={[...NAV, { href: "/partnership", label: "Partnership" }]} />
+        <FooterList title="Company" links={[...NAV, { href: "/partnership", label: "Send an inquiry" }]} />
         <FooterList
           title="Products"
           links={[
             { href: "/products#grades", label: "HI-LUB B50 and B80 beads" },
             { href: "/products#grades", label: "HI-LUB P130 and P200 powders" },
             { href: "/products#applications", label: "Applications" },
-            { href: "/partnership?interest=Sample", label: "Request a sample" },
+            { href: "/partnership?interest=Sample", label: "Samples" },
           ]}
         />
       </div>
@@ -54,7 +54,7 @@ function FooterList({ title, links }: { title: string; links: { href: string; la
       <ul className="space-y-2">
         {links.map((l) => (
           <li key={l.label}>
-            <Link href={l.href} className="text-white/75 no-underline hover:text-white">
+            <Link href={l.href} className="inline-flex min-h-11 items-center text-white/80 no-underline hover:text-white hover:underline md:min-h-0 md:py-0.5">
               {l.label}
             </Link>
           </li>

@@ -19,16 +19,17 @@ const REGIONS = [
 export default function MarketsPage() {
   return (
     <>
-      <PageHero title="Markets and customers" eyebrow="Markets">
+      <PageHero title="Markets and customers">
         <p>
           China, Taiwan and South Korea are our major markets. We supply leading chemical companies across Asia through
           long-standing relationships.
         </p>
       </PageHero>
       <Section>
-        <ul className="grid gap-4 md:grid-cols-3">
+        <h2 className="text-4xl sm:text-5xl">Where HI-LUB goes</h2>
+        <ul className="mt-8 grid gap-x-10 gap-y-6 md:grid-cols-3">
           {REGIONS.map(([name, text]) => (
-            <li key={name} className="rounded-lg border bg-card p-6">
+            <li key={name} className="border-t-2 border-primary pt-4">
               <strong className="block font-display text-2xl text-heading">{name}</strong>
               <span className="mt-1 block text-muted-foreground">{text}</span>
             </li>
@@ -52,10 +53,10 @@ async function Clients() {
   const clients = await getClients();
   return (
     <Section tone="mist">
-      <SectionHead title="Main clients">Global chemical companies we have supplied over the long term.</SectionHead>
-      <ul className="grid grid-cols-1 gap-px overflow-hidden rounded-lg border bg-border sm:grid-cols-2 lg:grid-cols-3">
+      <SectionHead title="Main customers">Global chemical companies we have supplied over the long term.</SectionHead>
+      <ul className="grid grid-cols-1 gap-x-8 sm:grid-cols-2 lg:grid-cols-3">
         {clients.map((c) => (
-          <li key={c.id} className="bg-card p-5">
+          <li key={c.id} className="border-t py-4">
             <strong className="block font-display text-xl text-heading">{c.name}</strong>
             <span className="text-muted-foreground">
               {c.country}

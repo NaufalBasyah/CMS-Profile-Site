@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 
 export function Brand({ light = false }: { light?: boolean }) {
   return (
-    <Link href="/" className="flex items-center gap-2.5 no-underline">
+    <Link href="/" className="flex min-h-11 items-center gap-2.5 no-underline">
       <Image src="/img/logo.png" alt="" width={52} height={34} priority={!light} />
       <span className={cn("font-display text-xl leading-none", light ? "text-white" : "text-heading")}>
         PT. CMS Chemical

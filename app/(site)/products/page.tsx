@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { connection } from "next/server";
 import { Suspense } from "react";
-import { InView } from "@/components/motion/in-view";
 import { Cta, PageFallback, PageHero, Section, SectionHead } from "@/components/site/blocks";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { getApplications, getProducts } from "@/lib/content";
@@ -16,7 +15,7 @@ export const metadata: Metadata = {
 export default function ProductsPage() {
   return (
     <>
-      <PageHero title="HI-LUB ethylene bis stearamide" eyebrow="Products">
+      <PageHero title="HI-LUB ethylene bis stearamide grades">
         <p>
           A palm-based wax amide that lubricates, releases and disperses in thermoplastics without affecting their
           chemical stability or surface appearance.
@@ -62,7 +61,7 @@ export default function ProductsPage() {
 const ROWS: [string, keyof Product][] = [
   ["Grade", "grade"], ["Physical form", "physicalForm"], ["Particle size", "particleSize"],
   ["Acid value", "acidValue"], ["Amine value", "amineValue"], ["Melting point", "meltingPoint"],
-  ["Colour", "color"], ["Packing", "packing"],
+  ["Colour", "color"], ["Packing", "packing"], ["Best for", "bestFor"],
 ];
 
 async function Grades() {
@@ -75,13 +74,14 @@ async function Grades() {
           title="Grades and specifications"
           action={{ href: "/partnership?interest=Technical%20data", label: "Request a technical data sheet" }}
         />
-        <div className="rounded-lg border bg-card">
+        {/* Tablet and up: one table to compare grades side by side */}
+        <div className="hidden rounded-lg border bg-card md:block">
           <Table>
             <TableHeader>
               <TableRow className="hover:bg-transparent">
                 <TableHead scope="col">Property</TableHead>
                 {products.map((p) => (
-                  <TableHead scope="col" key={p.id} className="text-sm text-heading normal-case">
+                  <TableHead scope="col" key={p.id} className="text-base font-display text-heading">
                     {p.name}
                   </TableHead>
                 ))}
@@ -99,29 +99,36 @@ async function Grades() {
             </TableBody>
           </Table>
         </div>
-        <p className="mt-3 text-sm text-muted-foreground">All descriptions and specifications are subject to change without notice.</p>
-        <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {/* Phones: one spec sheet per grade, read top to bottom */}
+        <ul className="space-y-4 md:hidden">
           {products.map((p) => (
             <li key={p.id} className="rounded-lg border bg-card p-5">
-              <strong className="block font-display text-2xl text-heading">{p.name}</strong>
-              <span className="text-sm font-semibold text-palm">{p.physicalForm}</span>
-              <p className="mt-2 text-[0.95rem]">{p.bestFor}</p>
+              <h3 className="text-2xl">{p.name}</h3>
+              <dl className="mt-3 divide-y text-[0.95rem]">
+                {ROWS.filter(([, key]) => key !== "grade").map(([label, key]) => (
+                  <div key={key} className="grid grid-cols-[7.5rem_1fr] gap-3 py-2">
+                    <dt className="text-muted-foreground">{label}</dt>
+                    <dd className="whitespace-pre-line">{String(p[key] || "—")}</dd>
+                  </div>
+                ))}
+              </dl>
             </li>
           ))}
         </ul>
+        <p className="mt-3 text-sm text-muted-foreground">All descriptions and specifications are subject to change without notice.</p>
       </Section>
       <Section id="applications">
-        <SectionHead title="Applications">Where our customers use HI-LUB.</SectionHead>
+        <SectionHead title="Applications by industry">Where our customers use HI-LUB.</SectionHead>
         <ul className="grid gap-x-10 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
-          {applications.map((a, i) => (
-            <InView as="li" key={a.id} delay={(i % 3) * 0.05} className="border-t pt-4">
+          {applications.map((a) => (
+            <li key={a.id} className="border-t pt-4">
               <strong className="block font-display text-xl text-heading">{a.name}</strong>
               <span className="mt-1 block text-muted-foreground">{a.description}</span>
-            </InView>
+            </li>
           ))}
         </ul>
         <p className="mt-10">
-          Not sure which grade fits your process? <Link href="/partnership?interest=Sample" className="font-semibold">Ask for a sample</Link>.
+          Not sure which grade fits your process? <Link href="/partnership?interest=Sample" className="font-semibold">Send an inquiry for a sample</Link>.
         </p>
       </Section>
     </>

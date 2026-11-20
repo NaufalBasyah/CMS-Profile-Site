@@ -1,11 +1,8 @@
-import { ArrowRightIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { connection } from "next/server";
 import { Suspense } from "react";
-import { FlowLines } from "@/components/effects/flow-lines";
-import { InView } from "@/components/motion/in-view";
-import { Container, Cta, PageFallback, Section, SectionHead } from "@/components/site/blocks";
+import { Container, Cta, MAIN_ACTION, PageFallback, Section, SectionHead, TextLink } from "@/components/site/blocks";
 import { buttonVariants } from "@/components/ui/button";
 import { getAdvantages, getClients, getNews, getProducts, getSettings } from "@/lib/content";
 import { cn, longDate } from "@/lib/utils";
@@ -18,12 +15,13 @@ export default function HomePage() {
   );
 }
 
+// A real sequence, so the steps keep their numbers.
 const CHAIN = [
-  ["Fresh fruit bunches", "Harvested on North Sumatra plantations.", "Local growers"],
-  ["Crude palm oil", "Pressed and refined at nearby oil palm mills.", "Local mills"],
-  ["Stearic acid", "Fractionated by Indonesian oleochemical producers, third level from CPO.", "Our raw material"],
-  ["Amidation", "Reacted with ethylenediamine in our Korean-built reactors.", "Our plant, Medan"],
-  ["HI-LUB E.B.S.", "Beads and powders exported to resin producers across Asia.", "Our customers"],
+  ["Fresh fruit bunches", "Harvested on North Sumatra plantations by local growers."],
+  ["Crude palm oil", "Pressed and refined at oil palm mills nearby."],
+  ["Stearic acid", "Fractionated by Indonesian oleochemical producers: our raw material."],
+  ["Amidation", "Reacted with ethylenediamine in the Korean-built reactors at our Medan plant."],
+  ["HI-LUB E.B.S.", "Beads and powders shipped to resin producers across Asia."],
 ];
 
 async function Home() {
@@ -34,44 +32,38 @@ async function Home() {
 
   return (
     <>
-      {/* Hero: the one animated effect on the page */}
-      <section className="relative overflow-hidden bg-indigo-deep text-white">
-        <FlowLines className="pointer-events-none absolute inset-0 h-full w-full opacity-70 [mask-image:linear-gradient(to_right,transparent_0%,black_45%)] lg:[mask-image:linear-gradient(to_right,rgba(0,0,0,0.25)_0%,black_50%)]" />
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(46,42,143,0.65),transparent_60%)]" />
-        <Container className="relative grid items-center gap-12 py-16 sm:py-24 lg:grid-cols-[1.1fr_1fr] lg:py-28">
-          <div>
-            <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-3 py-1 text-xs font-semibold tracking-[0.18em] text-white/80 uppercase">
-              <span className="size-1.5 rounded-full bg-[#8fd1a6]" /> Medan · Since {s.founded}
-            </p>
+      {/* Hero: a flat brand ground and the plant photo; the text entrance is the page's one moment */}
+      <section className="bg-indigo-deep text-white">
+        <Container className="grid items-center gap-10 py-12 sm:py-20 lg:grid-cols-[1.05fr_1fr] lg:gap-14 lg:py-24">
+          <div className="hero-enter">
             <h1 className="text-5xl text-white sm:text-6xl lg:text-7xl">{s.hero_title}</h1>
-            <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/80 sm:text-xl">{s.hero_intro}</p>
-            <div className="mt-9 flex flex-wrap gap-3">
-              <Link href="/products" className={cn(buttonVariants({ variant: "light", size: "lg" }), "no-underline")}>
-                View HI-LUB grades
+            <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/85 sm:text-xl">{s.hero_intro}</p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Link href={MAIN_ACTION.href} className={cn(buttonVariants({ variant: "light", size: "lg" }), "no-underline")}>
+                {MAIN_ACTION.label}
               </Link>
-              <Link href="/partnership" className={cn(buttonVariants({ variant: "outline-light", size: "lg" }), "no-underline")}>
-                Discuss a partnership
+              <Link href="/products" className={cn(buttonVariants({ variant: "outline-light", size: "lg" }), "no-underline")}>
+                View HI-LUB grades
               </Link>
             </div>
           </div>
-          <figure className="overflow-hidden rounded-lg border border-white/15 bg-white/5 shadow-2xl shadow-black/30">
+          <div className="overflow-hidden rounded-lg border border-white/15 shadow-2xl shadow-black/30">
             <Image
               src="/img/factory.jpg"
-              alt="The CMS Chemical factory entrance in Medan with a delivery truck at the gate"
+              alt={`The CMS Chemical plant in ${s.location}, with a delivery truck at the gate`}
               width={1287}
               height={484}
               priority
-              sizes="(min-width: 1024px) 520px, 100vw"
-              className="aspect-[4/3] h-auto w-full object-cover object-[30%_50%] sm:aspect-[16/9] lg:aspect-[4/3]"
+              sizes="(min-width: 1024px) 540px, 100vw"
+              className="aspect-[16/9] h-auto w-full object-cover object-[30%_50%] lg:aspect-[4/3]"
             />
-            <figcaption className="px-4 py-3 text-sm text-white/70">Our plant in {s.location}</figcaption>
-          </figure>
+          </div>
         </Container>
       </section>
 
       {/* Value chain */}
       <Section labelledBy="chain-title">
-        <div className="mb-10 grid gap-6 lg:grid-cols-[1fr_1fr] lg:items-end">
+        <div className="mb-10 grid gap-6 lg:grid-cols-2 lg:items-end">
           <h2 id="chain-title" className="text-4xl sm:text-5xl">From palm fruit to polymer additive</h2>
           <p className="text-muted-foreground">
             <b className="font-semibold text-heading">
@@ -82,98 +74,74 @@ async function Home() {
             Two molecules of stearic acid react with one of ethylenediamine to form E.B.S. and water.
           </p>
         </div>
-        <ol className="grid gap-px overflow-hidden rounded-lg border bg-border sm:grid-cols-2 lg:grid-cols-5">
-          {CHAIN.map(([title, text, who], i) => (
-            <InView as="li" key={title} delay={i * 0.06} className="flex flex-col gap-2 bg-card p-5">
-              <span className="text-sm font-semibold text-palm tabular-nums">0{i + 1}</span>
-              <strong className="font-display text-xl">{title}</strong>
-              <span className="text-sm text-muted-foreground">{text}</span>
-              <span className="mt-auto pt-3 text-xs font-semibold tracking-wide text-primary uppercase">{who}</span>
-            </InView>
+        <ol className="grid gap-0 lg:grid-cols-5 lg:gap-6">
+          {CHAIN.map(([title, text], i) => (
+            <li
+              key={title}
+              className="grid grid-cols-[2.25rem_1fr] gap-x-3 border-t py-4 lg:block lg:border-t-2 lg:border-primary lg:py-0 lg:pt-5"
+            >
+              <span className="font-display text-2xl text-palm tabular-nums lg:block">{i + 1}</span>
+              <span>
+                <strong className="block font-display text-xl text-heading lg:mt-2">{title}</strong>
+                <span className="mt-1 block text-[0.95rem] text-muted-foreground">{text}</span>
+              </span>
+            </li>
           ))}
         </ol>
       </Section>
 
-      {/* Qualitative facts (figures live on the Performance page) */}
-      <section className="border-y bg-white">
-        <Container>
-          <dl className="grid divide-y sm:grid-cols-2 sm:divide-y-0 lg:grid-cols-4 lg:divide-x">
-            {[
-              [s.founded, "First E.B.S. manufacturer in Indonesia"],
-              [String(products.length), "HI-LUB grades, in beads and powders"],
-              ["3 shifts", "A day, so we can hold lead times"],
-              ["Asia-wide", "Customers in China, Taiwan, Korea, Japan and beyond"],
-            ].map(([value, label]) => (
-              <div key={label} className="flex flex-col-reverse gap-1 px-2 py-7 lg:px-6">
-                <dt className="text-sm text-muted-foreground">{label}</dt>
-                <dd className="font-display text-4xl text-heading">{value}</dd>
-              </div>
-            ))}
-          </dl>
-          <p className="border-t py-4 text-sm text-muted-foreground">
-            Production, sales and market figures are on the{" "}
-            <Link href="/performance" className="font-semibold">Performance page</Link>.
-          </p>
-        </Container>
-      </section>
-
-      {/* Grades */}
-      <Section>
-        <div className="grid gap-10 lg:grid-cols-[1fr_1.4fr]">
+      {/* Grades, as a list rather than a grid of identical boxes */}
+      <Section tone="mist">
+        <div className="grid gap-10 lg:grid-cols-[1fr_1.6fr]">
           <div>
             <h2 className="text-4xl sm:text-5xl">HI-LUB grades</h2>
             <p className="mt-4 text-lg text-muted-foreground">
-              HI-LUB is our brand of ethylene bis stearamide. It works as an internal and external lubricant, release
-              agent and pigment dispersant in most thermoplastics.
+              {products.length === 4 ? "Four grades" : `${products.length} grades`}, in beads and powders. HI-LUB works as
+              an internal and external lubricant, release agent and pigment dispersant in most thermoplastics.
             </p>
-            <Link href="/products" className="mt-6 inline-flex items-center gap-1.5 font-semibold">
-              Full specifications and applications <ArrowRightIcon className="size-4" />
-            </Link>
+            <TextLink href="/products" className="mt-4">Full specifications and applications</TextLink>
           </div>
-          <ul className="grid gap-4 sm:grid-cols-2">
-            {products.map((p, i) => (
-              <InView as="li" key={p.id} delay={i * 0.05} className="rounded-lg border bg-card p-5">
-                <div className="flex items-baseline justify-between gap-3">
-                  <strong className="font-display text-2xl">{p.name}</strong>
-                  <span className="rounded-sm bg-mist px-2 py-0.5 text-xs font-semibold text-heading">{p.physicalForm}</span>
-                </div>
-                <p className="mt-1 text-sm text-muted-foreground">{p.particleSize}</p>
-                <p className="mt-3 text-[0.95rem]">{p.bestFor}</p>
-              </InView>
+          <dl className="divide-y border-y">
+            {products.map((p) => (
+              <div key={p.id} className="grid gap-1 py-5 sm:grid-cols-[13rem_1fr] sm:gap-6">
+                <dt>
+                  <strong className="block font-display text-2xl text-heading">{p.name}</strong>
+                  <span className="text-sm text-muted-foreground">{p.physicalForm}, {p.particleSize.toLowerCase()}</span>
+                </dt>
+                <dd className="text-[0.95rem] sm:pt-1">{p.bestFor}</dd>
+              </div>
             ))}
-          </ul>
+          </dl>
         </div>
       </Section>
 
       {/* Advantages */}
-      <Section tone="mist">
-        <SectionHead title="Why partners choose us" action={{ href: "/operations", label: "How we operate" }} />
+      <Section>
+        <SectionHead title="Why buy E.B.S. from Medan" action={{ href: "/operations", label: "How we make HI-LUB" }} />
         <ul className="grid gap-x-12 gap-y-10 md:grid-cols-2">
-          {advantages.map((a, i) => (
-            <InView as="li" key={a.id} delay={i * 0.05} className="border-t-2 border-primary pt-5">
+          {advantages.map((a) => (
+            <li key={a.id} className="border-t-2 border-primary pt-5">
               <h3 className="text-2xl">{a.title}</h3>
               <p className="mt-2 text-muted-foreground">{a.description}</p>
-            </InView>
+            </li>
           ))}
         </ul>
       </Section>
 
-      {/* Clients */}
-      <Section>
-        <div className="grid gap-10 lg:grid-cols-[1fr_1.4fr]">
+      {/* Customers: a plain list of names, no boxes */}
+      <Section tone="mist">
+        <div className="grid gap-10 lg:grid-cols-[1fr_1.6fr]">
           <div>
-            <h2 className="text-4xl sm:text-5xl">Trusted by Asia&apos;s chemical majors</h2>
+            <h2 className="text-4xl sm:text-5xl">Customers across Asia</h2>
             <p className="mt-4 text-lg text-muted-foreground">
-              We have built long relationships with leading resin and chemical producers, most of them in China, Taiwan
-              and South Korea.
+              Long-standing supply to resin and chemical producers, most of them in China, Taiwan and South Korea. Share
+              of sales by country is on the <Link href="/performance?tab=markets" className="font-semibold">Performance page</Link>.
             </p>
-            <Link href="/markets" className="mt-6 inline-flex items-center gap-1.5 font-semibold">
-              Markets and customers <ArrowRightIcon className="size-4" />
-            </Link>
+            <TextLink href="/markets" className="mt-4">All customers and markets</TextLink>
           </div>
-          <ul className="grid grid-cols-2 gap-px overflow-hidden rounded-lg border bg-border sm:grid-cols-3">
+          <ul className="grid grid-cols-1 gap-x-8 sm:grid-cols-2 lg:grid-cols-3">
             {clients.slice(0, 9).map((c) => (
-              <li key={c.id} className="bg-card p-4">
+              <li key={c.id} className="border-t py-3">
                 <strong className="block font-display text-lg text-heading">{c.name}</strong>
                 <span className="text-sm text-muted-foreground">{c.country}</span>
               </li>
@@ -183,21 +151,23 @@ async function Home() {
       </Section>
 
       {news.length > 0 && (
-        <Section tone="mist">
+        <Section>
           <SectionHead title="Latest news" action={{ href: "/news", label: "All news" }} />
-          <ul className="grid gap-6 md:grid-cols-3">
+          <ul className="divide-y border-y">
             {news.map((n) => (
-              <li key={n.slug} className="flex flex-col rounded-lg border bg-card p-6">
+              <li key={n.slug} className="grid gap-2 py-6 md:grid-cols-[12rem_1fr] md:gap-8">
                 <p className="text-sm text-muted-foreground">
-                  <span className="font-semibold text-palm">{n.category}</span> ·{" "}
                   <time dateTime={n.publishedOn}>{longDate(n.publishedOn)}</time>
+                  <span className="mt-0.5 block font-semibold text-palm">{n.category}</span>
                 </p>
-                <h3 className="mt-3 text-2xl">
-                  <Link href={`/news/${n.slug}`} className="text-heading no-underline hover:text-primary">
-                    {n.title}
-                  </Link>
-                </h3>
-                <p className="mt-2 text-muted-foreground">{n.summary}</p>
+                <div>
+                  <h3 className="text-2xl">
+                    <Link href={`/news/${n.slug}`} className="text-heading no-underline hover:text-primary hover:underline">
+                      {n.title}
+                    </Link>
+                  </h3>
+                  <p className="mt-1 text-muted-foreground">{n.summary}</p>
+                </div>
               </li>
             ))}
           </ul>

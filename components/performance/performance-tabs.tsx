@@ -2,11 +2,11 @@
 
 import { CalendarRangeIcon, GlobeIcon, TrendingUpIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { AnimatedNumber } from "@/components/motion/animated-number";
 import { Tabs, TabsList, TabsPanel, TabsTab } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { num, usd } from "@/lib/utils";
-import { AnnualChart, MonthlyChart, type AnnualPoint, type MonthlyPoint } from "./charts";
+import type { AnnualPoint, MonthlyPoint } from "./charts";
+import { LazyAnnualChart, LazyMonthlyChart } from "./lazy-charts";
 
 export type PerformanceData = {
   annual: AnnualPoint[];
@@ -41,20 +41,20 @@ export function PerformanceTabs({ data, initialTab }: { data: PerformanceData; i
       <TabsPanel value="annual" className="space-y-8">
         {latest && (
           <dl className="grid gap-px overflow-hidden rounded-lg border bg-border sm:grid-cols-2 lg:grid-cols-4">
-            <Kpi label={`Produced in ${latest.year}`}><AnimatedNumber value={latest.production} format={(v) => `${num(v)} t`} /></Kpi>
-            <Kpi label={`Sold in ${latest.year}`}><AnimatedNumber value={latest.sales} format={(v) => `${num(v)} t`} /></Kpi>
-            <Kpi label={`Sales revenue in ${latest.year}`}><AnimatedNumber value={latest.revenue} format={usd} /></Kpi>
+            <Kpi label={`Produced in ${latest.year}`}>{num(latest.production)} t</Kpi>
+            <Kpi label={`Sold in ${latest.year}`}>{num(latest.sales)} t</Kpi>
+            <Kpi label={`Sales revenue in ${latest.year}`}>{usd(latest.revenue)}</Kpi>
             <Kpi label="Annual capacity">{data.capacity} t</Kpi>
           </dl>
         )}
         <figure className="rounded-lg border bg-card p-5 sm:p-6">
           <figcaption className="mb-4">
-            <h3 className="text-2xl">Annual production and sales volume</h3>
+            <h2 className="text-2xl">Annual production and sales volume</h2>
             <p className="text-sm text-muted-foreground">Tons per year (bars) and sales revenue in US dollars (line).</p>
           </figcaption>
-          <AnnualChart data={data.annual} />
+          <LazyAnnualChart data={data.annual} />
           <details className="mt-4 group">
-            <summary className="cursor-pointer text-sm font-semibold text-primary">Show the figures as a table</summary>
+            <summary className="inline-flex min-h-11 cursor-pointer items-center text-sm font-semibold text-primary">Show the figures as a table</summary>
             <div className="mt-3">
               <Table>
                 <TableHeader>
@@ -90,17 +90,17 @@ export function PerformanceTabs({ data, initialTab }: { data: PerformanceData; i
         <div className="grid gap-6 lg:grid-cols-2">
           <figure className="rounded-lg border bg-card p-5 sm:p-6">
             <figcaption className="mb-4">
-              <h3 className="text-2xl">Production by month</h3>
+              <h2 className="text-2xl">Production by month</h2>
               <p className="text-sm text-muted-foreground">Tons per month, compared by year.</p>
             </figcaption>
-            <MonthlyChart data={data.monthly} years={data.monthlyYears} />
+            <LazyMonthlyChart data={data.monthly} years={data.monthlyYears} />
           </figure>
           <figure className="rounded-lg border bg-card p-5 sm:p-6">
             <figcaption className="mb-4">
-              <h3 className="text-2xl">Sales by month</h3>
+              <h2 className="text-2xl">Sales by month</h2>
               <p className="text-sm text-muted-foreground">Tons per month, compared by year.</p>
             </figcaption>
-            <MonthlyChart data={data.monthlySales} years={data.monthlyYears} />
+            <LazyMonthlyChart data={data.monthlySales} years={data.monthlyYears} />
           </figure>
         </div>
       </TabsPanel>
@@ -108,7 +108,7 @@ export function PerformanceTabs({ data, initialTab }: { data: PerformanceData; i
       <TabsPanel value="markets">
         <div className="grid gap-10 rounded-lg border bg-card p-5 sm:p-8 lg:grid-cols-[1fr_1.6fr]">
           <div>
-            <h3 className="text-3xl">Where our sales go</h3>
+            <h2 className="text-3xl">Where our sales go</h2>
             <p className="mt-2 text-muted-foreground">Approximate share of annual sales by country.</p>
           </div>
           <ul className="space-y-3">

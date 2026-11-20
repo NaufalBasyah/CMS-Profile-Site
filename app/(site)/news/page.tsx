@@ -11,7 +11,7 @@ export const metadata: Metadata = { title: "News", description: "Company announc
 export default function NewsPage() {
   return (
     <>
-      <PageHero title="News" eyebrow="Newsroom">
+      <PageHero title="News">
         <p>Company announcements, product updates and events.</p>
       </PageHero>
       <Suspense fallback={<PageFallback />}>
@@ -27,7 +27,7 @@ async function NewsList() {
   return (
     <Section>
       {posts.length === 0 ? (
-        <p>There&apos;s no news yet. Check back soon.</p>
+        <p>No news has been published yet.</p>
       ) : (
         <ul className="divide-y border-y">
           {posts.map((n) => (
