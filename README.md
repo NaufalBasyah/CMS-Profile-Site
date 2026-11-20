@@ -56,7 +56,11 @@ render.yaml      Deployment recipe for Render
 
 To make a new kind of content editable: add a table in `models.py`, add an entry to `SECTIONS` in `admin.py`, and show it in a template.
 
-## Deploy to Render
+## Live setup
+
+The live site runs on **Render** (web service, Singapore) with its database on **Supabase** (Postgres, Singapore). Its tables are in a private `cms` schema that Supabase's public API cannot reach, and it connects with a dedicated `cms_app` login.
+
+## Deploy to Render with a Render database
 
 `render.yaml` sets up a web service and a Postgres database together.
 
@@ -74,6 +78,7 @@ Notes on the free plan: the web service sleeps after 15 minutes without visits (
 | `SECRET_KEY` | Signs login sessions. Use a long random value in production | Development value |
 | `ADMIN_USERNAME` | First admin account's username (first run only) | `admin` |
 | `ADMIN_PASSWORD` | First admin account's password (first run only) | `change-me-now` |
+| `DB_SCHEMA` | Postgres schema for the site's tables (the live site uses `cms` on Supabase) | none |
 | `HTTPS_ONLY` | `1` sends login cookies over HTTPS only | `0` |
 
 See `.env.example`. Never commit real passwords.
