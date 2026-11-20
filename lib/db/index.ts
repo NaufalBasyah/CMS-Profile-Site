@@ -44,7 +44,14 @@ async function connect(): Promise<DB> {
       connection: dbSchema ? { search_path: dbSchema } : undefined,
     });
     db = drizzle(client, { schema }) as unknown as DB;
-    if (dbSchema) await db.execute(sql.raw(`CREATE SCHEMA IF NOT EXISTS "${dbSchema}"`));
+    if (dbSchema) {
+      // Only create the schema when it's missing: a restricted login (like the live
+      // site's cms_app) may use an existing schema but not create one.
+      const found = await db.execute(sql`select 1 from pg_namespace where nspname = ${dbSchema}`);
+      if ((found as unknown as unknown[]).length === 0) {
+        await db.execute(sql.raw(`CREATE SCHEMA "${dbSchema}"`));
+      }
+    }
   } else {
     const { PGlite } = await import("@electric-sql/pglite");
     const { drizzle } = await import("drizzle-orm/pglite");
