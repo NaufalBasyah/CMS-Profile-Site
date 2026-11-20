@@ -3,9 +3,11 @@ import Link from "next/link";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { Cta, PageFallback, PageHero, Section, SectionHead } from "@/components/site/blocks";
+import { PhotoGallery } from "@/components/site/carousel";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { getApplications, getProducts } from "@/lib/content";
 import type { Product } from "@/lib/db/schema";
+import { APPLICATION_PHOTOS } from "@/lib/gallery";
 
 export const metadata: Metadata = {
   title: "HI-LUB products",
@@ -22,7 +24,7 @@ export default function ProductsPage() {
         </p>
       </PageHero>
       <Section>
-        <div className="grid gap-12 lg:grid-cols-2">
+        <div className="reveal-each grid gap-12 lg:grid-cols-2">
           <div>
             <h2 className="text-4xl">What HI-LUB is</h2>
             <p className="mt-4">
@@ -119,7 +121,8 @@ async function Grades() {
       </Section>
       <Section id="applications">
         <SectionHead title="Applications by industry">Where our customers use HI-LUB.</SectionHead>
-        <ul className="grid gap-x-10 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
+        <PhotoGallery photos={APPLICATION_PHOTOS} label="Photos of products made with HI-LUB" className="reveal mb-14" />
+        <ul className="reveal-each grid gap-x-10 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
           {applications.map((a) => (
             <li key={a.id} className="border-t pt-4">
               <strong className="block font-display text-xl text-heading">{a.name}</strong>

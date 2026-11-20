@@ -1,10 +1,11 @@
-import Image from "next/image";
 import Link from "next/link";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { Container, Cta, MAIN_ACTION, PageFallback, Section, SectionHead, TextLink } from "@/components/site/blocks";
+import { HeroSlideshow, PhotoGallery } from "@/components/site/carousel";
 import { buttonVariants } from "@/components/ui/button";
 import { getAdvantages, getClients, getNews, getProducts, getSettings } from "@/lib/content";
+import { HERO_PHOTOS, PLANT_PHOTOS } from "@/lib/gallery";
 import { cn, longDate } from "@/lib/utils";
 
 export default function HomePage() {
@@ -32,7 +33,7 @@ async function Home() {
 
   return (
     <>
-      {/* Hero: a flat brand ground and the plant photo; the text entrance is the page's one moment */}
+      {/* Hero: a flat brand ground, the text entrance and a slideshow of the plant */}
       <section className="bg-indigo-deep text-white">
         <Container className="grid items-center gap-10 py-12 sm:py-20 lg:grid-cols-[1.05fr_1fr] lg:gap-14 lg:py-24">
           <div className="hero-enter">
@@ -47,16 +48,8 @@ async function Home() {
               </Link>
             </div>
           </div>
-          <div className="overflow-hidden rounded-lg border border-white/15 shadow-2xl shadow-black/30">
-            <Image
-              src="/img/factory.jpg"
-              alt={`The CMS Chemical plant in ${s.location}, with a delivery truck at the gate`}
-              width={1287}
-              height={484}
-              priority
-              sizes="(min-width: 1024px) 540px, 100vw"
-              className="aspect-[16/9] h-auto w-full object-cover object-[30%_50%] lg:aspect-[4/3]"
-            />
+          <div className="hero-enter [animation-delay:120ms]">
+            <HeroSlideshow photos={HERO_PHOTOS} label="Photos of the Medan plant" />
           </div>
         </Container>
       </section>
@@ -74,7 +67,7 @@ async function Home() {
             Two molecules of stearic acid react with one of ethylenediamine to form E.B.S. and water.
           </p>
         </div>
-        <ol className="grid gap-0 lg:grid-cols-5 lg:gap-6">
+        <ol className="reveal-each grid gap-0 lg:grid-cols-5 lg:gap-6">
           {CHAIN.map(([title, text], i) => (
             <li
               key={title}
@@ -90,10 +83,18 @@ async function Home() {
         </ol>
       </Section>
 
+      {/* A walk through the plant */}
+      <Section tone="mist" labelledBy="plant-title">
+        <SectionHead id="plant-title" title="Inside the Medan plant" action={{ href: "/operations", label: "How we make HI-LUB" }}>
+          From raw material storage to the warehouse, every HI-LUB grade is made on one site.
+        </SectionHead>
+        <PhotoGallery photos={PLANT_PHOTOS} label="Photos inside the Medan plant" className="reveal" />
+      </Section>
+
       {/* Grades, as a list rather than a grid of identical boxes */}
-      <Section tone="mist">
+      <Section>
         <div className="grid gap-10 lg:grid-cols-[1fr_1.6fr]">
-          <div>
+          <div className="reveal">
             <h2 className="text-4xl sm:text-5xl">HI-LUB grades</h2>
             <p className="mt-4 text-lg text-muted-foreground">
               {products.length === 4 ? "Four grades" : `${products.length} grades`}, in beads and powders. HI-LUB works as
@@ -101,7 +102,7 @@ async function Home() {
             </p>
             <TextLink href="/products" className="mt-4">Full specifications and applications</TextLink>
           </div>
-          <dl className="divide-y border-y">
+          <dl className="reveal-each divide-y border-y">
             {products.map((p) => (
               <div key={p.id} className="grid gap-1 py-5 sm:grid-cols-[13rem_1fr] sm:gap-6">
                 <dt>
@@ -116,9 +117,9 @@ async function Home() {
       </Section>
 
       {/* Advantages */}
-      <Section>
+      <Section tone="mist">
         <SectionHead title="Why buy E.B.S. from Medan" action={{ href: "/operations", label: "How we make HI-LUB" }} />
-        <ul className="grid gap-x-12 gap-y-10 md:grid-cols-2">
+        <ul className="reveal-each grid gap-x-12 gap-y-10 md:grid-cols-2">
           {advantages.map((a) => (
             <li key={a.id} className="border-t-2 border-primary pt-5">
               <h3 className="text-2xl">{a.title}</h3>
@@ -129,7 +130,7 @@ async function Home() {
       </Section>
 
       {/* Customers: a plain list of names, no boxes */}
-      <Section tone="mist">
+      <Section>
         <div className="grid gap-10 lg:grid-cols-[1fr_1.6fr]">
           <div>
             <h2 className="text-4xl sm:text-5xl">Customers across Asia</h2>
@@ -139,7 +140,7 @@ async function Home() {
             </p>
             <TextLink href="/markets" className="mt-4">All customers and markets</TextLink>
           </div>
-          <ul className="grid grid-cols-1 gap-x-8 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="reveal-each grid grid-cols-1 gap-x-8 sm:grid-cols-2 lg:grid-cols-3">
             {clients.slice(0, 9).map((c) => (
               <li key={c.id} className="border-t py-3">
                 <strong className="block font-display text-lg text-heading">{c.name}</strong>
@@ -151,9 +152,9 @@ async function Home() {
       </Section>
 
       {news.length > 0 && (
-        <Section>
+        <Section tone="mist">
           <SectionHead title="Latest news" action={{ href: "/news", label: "All news" }} />
-          <ul className="divide-y border-y">
+          <ul className="reveal-each divide-y border-y">
             {news.map((n) => (
               <li key={n.slug} className="grid gap-2 py-6 md:grid-cols-[12rem_1fr] md:gap-8">
                 <p className="text-sm text-muted-foreground">
