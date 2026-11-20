@@ -1,6 +1,5 @@
 "use server";
 
-import { updateTag } from "next/cache";
 import { z } from "zod";
 import { getDb, schema as t } from "@/lib/db";
 
@@ -45,6 +44,5 @@ export async function sendInquiry(_prev: InquiryState, form: FormData): Promise<
     console.error("Saving inquiry failed", err);
     return { values, error: "We couldn't send your message just now. Please try again, or email us directly." };
   }
-  updateTag("inquiries");
   return { sent: true };
 }

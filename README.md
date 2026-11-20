@@ -1,88 +1,92 @@
 # CMS Profile Site
 
-Company website for **PT. Choyang Mopoli Samsung Chemical Indonesia** (PT. CMS Chem), with a built-in admin panel (CMS) for editing every piece of content without touching code.
+Company website for **PT. Choyang Mopoli Samsung Chemical Indonesia** (PT. CMS Chem), with a built-in admin panel for editing every piece of content without touching code.
 
-- **Public site:** Home, About, Products (HI-LUB grades), Operations, Performance (charts), Markets, News, Partnership (inquiry form)
-- **Admin panel:** `/admin`. Edit company details, products, figures, clients, news and more; read inquiries sent from the website.
+- **Public site:** Home, About, Products (HI-LUB grades), Operations, Performance, Markets, News, Partnership (inquiry form)
+- **Admin panel:** `/admin`. Edit company details, products, history, clients, news and the Performance figures; read inquiries from the website.
 
-Built with Python: **FastAPI** (web server), **Jinja** (HTML templates), **SQLAlchemy** (database). No JavaScript framework.
+Built with **Next.js 16** (App Router, React 19, TypeScript), **Tailwind CSS v4**, **Base UI** components in the shadcn/ui style, **Motion**, **Recharts** and **Drizzle ORM** on Postgres (Supabase in production).
 
-> **Sample content.** Production, sales, capacity, product specs and client names come from the company profile deck. Contact details, certifications, news posts and some history entries are **sample data**. Replace them in the admin panel, then turn off the sample notice under *Site settings → Site*.
+> **Illustrative figures.** Every production, sales, revenue, capacity and market-share number is on the **Performance** page only, and the seeded numbers are **not** the company's reported results: they were scaled down to about a tenth and randomised. The page shows a notice saying so (switch it off under *Site settings → Performance page* only once real, approved figures are entered).
+>
+> **Sample content.** Contact details, certifications, news posts and some history entries are also sample data. Replace them in the admin panel, then turn off the footer notice under *Site settings → Site*.
 
 ---
 
 ## Run it on your computer
 
-You need Python 3.12 or newer.
+You need Node.js 20.9 or newer (22 recommended).
 
 ```bash
 # 1. Get the code
 git clone https://github.com/NaufalBasyah/cms-profile-site.git
 cd cms-profile-site
 
-# 2. Create an isolated Python environment and install packages
-python -m venv .venv
-source .venv/bin/activate          # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
+# 2. Install packages
+npm install
 
-# 3. Start the server (reloads automatically when you edit files)
-uvicorn app.main:app --reload
+# 3. Start the development server (reloads when you edit files)
+npm run dev
 ```
 
-Open http://127.0.0.1:8000 for the site and http://127.0.0.1:8000/admin for the admin panel.
+Open http://localhost:3000 for the site and http://localhost:3000/admin for the admin panel.
 
-The first start creates a local database file (`cms.db`) and fills it with the content. Delete `cms.db` any time to start fresh.
+No database setup is needed locally: the first start creates a small embedded Postgres in `.pglite/` and fills it with the content. Delete `.pglite/` any time to start fresh.
 
-**Default admin login:** username `admin`, password `change-me-now`. The dashboard warns you until you change it. To pick your own password from the start, set it before the first run:
+**Default admin login:** username `admin`, password `change-me-now`. The dashboard warns you until you change it.
 
-```bash
-ADMIN_PASSWORD="your-strong-password" uvicorn app.main:app --reload
-```
+Before pushing, check that everything compiles: `npm run lint` and `npm run build`.
 
 ## How the code is organised
 
 ```
 app/
-  main.py        Public pages (one function per page) and app setup
-  admin.py       Admin panel. SECTIONS describes every editable content type
-  models.py      Database tables
-  seed.py        Content loaded on the very first run
-  auth.py        Passwords, login sessions, form protection
-  db.py          Database connection (SQLite locally, Postgres in production)
-  templates/     HTML pages (admin pages in templates/admin/)
-  static/        CSS, fonts, images, Chart.js
-render.yaml      Deployment recipe for Render
+  (site)/            Public pages, one folder per URL (page.tsx)
+  admin/             Admin panel: login, dashboard, settings, inquiries, content sections
+  media/[id]/        Serves images uploaded in the admin panel
+  globals.css        Brand colours, fonts and design tokens
+components/
+  ui/                Buttons, inputs, tabs, tables, sheet (Base UI, shadcn/ui style)
+  site/              Header, footer and page building blocks
+  performance/       Performance page tabs and charts
+  motion/, effects/  Scroll reveal, animated numbers, hero background
+  admin/             Admin forms and navigation
+lib/
+  db/                Tables (schema.ts, ddl.ts), connection (index.ts), first-run content (seed.ts)
+  content.ts         Cached reads for the public site
+  admin/             Admin sections (fields.ts) and save/delete actions (actions.ts)
+  auth/              Passwords and sign-in sessions
+proxy.ts             Sends signed-out visitors from /admin to the login page
+render.yaml          Deployment recipe for Render
 ```
 
-To make a new kind of content editable: add a table in `models.py`, add an entry to `SECTIONS` in `admin.py`, and show it in a template.
+To make a new kind of content editable: add a table in `lib/db/schema.ts` and `lib/db/ddl.ts`, add an entry in `lib/admin/fields.ts` and `lib/admin/sections.ts`, and show it on a page.
 
-## Live setup
+**How updates appear:** public pages are cached on the server. Every save in the admin panel clears that cache, so visitors see changes on their next page load.
 
-The live site runs on **Render** (web service, Singapore) with its database on **Supabase** (Postgres, Singapore). Its tables are in a private `cms` schema that Supabase's public API cannot reach, and it connects with a dedicated `cms_app` login.
+## Deploy to Render with Supabase
 
-## Deploy to Render with a Render database
+1. In Supabase, open your project → **Connect** and copy a Postgres connection string (Session pooler works well with Render).
+2. In Render choose **New → Blueprint** and pick this repository. Fill in `DATABASE_URL`, `ADMIN_PASSWORD` and `SITE_URL` when asked. Render generates `SECRET_KEY`.
+3. On first start the site creates its tables in the `cms_next` schema and fills them with the content above. Every push to `main` redeploys.
 
-`render.yaml` sets up a web service and a Postgres database together.
+**About the old Python site's data.** The previous version kept its tables in the `cms` schema. This version uses the same table and column names, and accepts the old admin password hashes, but **don't point `DB_SCHEMA` at `cms`** unless you want its content: that schema still holds the original, real production and sales figures, which would then appear on the Performance page. Use the fresh `cms_next` schema, and copy across only what you need (inquiries, for example).
 
-1. In Render, choose **New → Blueprint** and pick this repository.
-2. When asked, enter an `ADMIN_PASSWORD`. Render generates `SECRET_KEY` and connects `DATABASE_URL` automatically.
-3. Every push to `main` redeploys the site.
-
-Notes on the free plan: the web service sleeps after 15 minutes without visits (the first visit after that takes about a minute), and Render's free Postgres database expires after 30 days. Upgrade the database before relying on it.
+On Render's free plan the service sleeps after 15 minutes without visits; the first visit after that takes about a minute.
 
 ## Environment variables
 
 | Name | What it does | Default |
 | --- | --- | --- |
-| `DATABASE_URL` | Postgres connection string | SQLite file `cms.db` |
-| `SECRET_KEY` | Signs login sessions. Use a long random value in production | Development value |
-| `ADMIN_USERNAME` | First admin account's username (first run only) | `admin` |
-| `ADMIN_PASSWORD` | First admin account's password (first run only) | `change-me-now` |
-| `DB_SCHEMA` | Postgres schema for the site's tables (the live site uses `cms` on Supabase) | none |
-| `HTTPS_ONLY` | `1` sends login cookies over HTTPS only | `0` |
+| `DATABASE_URL` | Postgres connection string | Embedded local database in `.pglite/` |
+| `DB_SCHEMA` | Postgres schema for the site's tables (keeps them away from Supabase's public API) | none (`public`) |
+| `SECRET_KEY` | Signs admin sign-in cookies. Required in production | Development value |
+| `ADMIN_USERNAME` | First admin account's username (only when no users exist) | `admin` |
+| `ADMIN_PASSWORD` | First admin account's password (only when no users exist) | `change-me-now` |
+| `SITE_URL` | The site's public address, for the sitemap and link previews | `http://localhost:3000` |
 
 See `.env.example`. Never commit real passwords.
 
 ## Credits
 
-Archivo typeface by Omnibus-Type, SIL Open Font License (`app/static/fonts/OFL-LICENSE.txt`). Charts by Chart.js (MIT).
+Archivo typeface by Omnibus-Type, SIL Open Font License (`app/fonts/OFL-LICENSE.txt`). Components follow shadcn/ui conventions on Base UI (MIT); the scroll reveal and animated numbers are modelled on Motion Primitives and the hero background on Aceternity UI's Background Beams, written in this repo.
