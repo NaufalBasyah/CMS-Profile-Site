@@ -11,9 +11,9 @@ const nextConfig: NextConfig = {
     // Image uploads in the admin panel are capped at 3 MB; leave room for the form fields.
     serverActions: { bodySizeLimit: "4mb" },
   },
-  // Sample photos in the carousels come from picsum.photos until real ones replace them (lib/gallery.ts).
+  // Sample photos in the carousels come from Unsplash until real ones replace them (lib/gallery.ts).
   images: {
-    remotePatterns: [{ protocol: "https", hostname: "picsum.photos", pathname: "/seed/**" }],
+    remotePatterns: [{ protocol: "https", hostname: "images.unsplash.com", pathname: "/photo-**" }],
   },
   poweredByHeader: false,
   turbopack: {
