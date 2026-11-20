@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { Cta, PageFallback, PageHero, Section, SectionHead } from "@/components/site/blocks";
+import { PhotoGallery } from "@/components/site/carousel";
 import { BusinessScope, ValueChain } from "@/components/site/diagrams";
 import { getAdvantages } from "@/lib/content";
+import { PROCESS_PHOTOS } from "@/lib/gallery";
 
 export const metadata: Metadata = {
   title: "How we make HI-LUB",
@@ -33,7 +35,15 @@ export default function OperationsPage() {
             </p>
           </div>
         </div>
-        <BusinessScope />
+        <div className="reveal">
+          <BusinessScope />
+        </div>
+      </Section>
+      <Section tone="mist" labelledBy="line-title">
+        <SectionHead id="line-title" title="The production line, step by step">
+          Six stages turn stearic acid into packed HI-LUB, all on our Medan site.
+        </SectionHead>
+        <PhotoGallery photos={PROCESS_PHOTOS} label="Photos of the production line" className="reveal" />
       </Section>
       <Section labelledBy="chain-title">
         <div className="mb-12 grid gap-6 lg:grid-cols-2 lg:items-end">
@@ -43,7 +53,9 @@ export default function OperationsPage() {
             is produced by refining and fractionating palm oil and palm kernel oil.
           </p>
         </div>
-        <ValueChain />
+        <div className="reveal">
+          <ValueChain />
+        </div>
       </Section>
       <Suspense fallback={<PageFallback />}>
         <Advantages />
@@ -59,7 +71,7 @@ async function Advantages() {
   return (
     <Section tone="mist">
       <SectionHead title="Advantages of making E.B.S. in Medan" />
-      <ul className="grid gap-x-12 gap-y-10 md:grid-cols-2">
+      <ul className="reveal-each grid gap-x-12 gap-y-10 md:grid-cols-2">
         {advantages.map((a) => (
           <li key={a.id} className="border-t-2 border-primary pt-5">
             <h3 className="text-2xl">{a.title}</h3>

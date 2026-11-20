@@ -24,7 +24,8 @@ export function SiteHeader({ path }: { path: string }) {
   const [open, setOpen] = useState(false);
   const close = () => setOpen(false);
   return (
-    <header className="sticky top-0 z-40 border-b bg-background/90 backdrop-blur supports-backdrop-filter:bg-background/75">
+    <header className="header-shade sticky top-0 z-40 border-b bg-background/90 backdrop-blur supports-backdrop-filter:bg-background/75">
+      <span aria-hidden className="page-progress absolute inset-x-0 -bottom-px h-0.5 bg-primary" />
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6 lg:h-[4.5rem]">
         <Brand />
         <nav aria-label="Main" className="hidden items-center gap-1 lg:flex">
@@ -33,7 +34,7 @@ export function SiteHeader({ path }: { path: string }) {
               key={item.href}
               href={item.href}
               aria-current={isCurrent(path, item.href) ? "page" : undefined}
-              className="relative flex min-h-11 items-center rounded-md px-3 text-[0.95rem] font-medium text-foreground no-underline transition-colors hover:text-primary aria-[current=page]:text-primary aria-[current=page]:after:absolute aria-[current=page]:after:inset-x-3 aria-[current=page]:after:-bottom-[0.6rem] aria-[current=page]:after:h-0.5 aria-[current=page]:after:bg-primary"
+              className="relative flex min-h-11 items-center rounded-md px-3 text-[0.95rem] font-medium text-foreground no-underline transition-colors after:absolute after:inset-x-3 after:bottom-1.5 after:h-0.5 after:origin-left after:scale-x-0 after:bg-primary after:transition-transform after:duration-300 after:ease-out hover:text-primary hover:after:scale-x-100 aria-[current=page]:text-primary aria-[current=page]:after:-bottom-[0.6rem] aria-[current=page]:after:scale-x-100"
             >
               {item.label}
             </Link>
