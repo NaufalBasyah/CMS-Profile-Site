@@ -1,0 +1,190 @@
+@import "tailwindcss";
+
+/* PT. CMS Chem Indonesia
+   Palette from the company logo: indigo swoosh, palm green, oxide red.
+   Tokens follow shadcn/ui names so copied components pick them up. */
+:root {
+  --indigo: #2e2a8f;
+  --indigo-deep: #1a1950;
+  --palm: #1f6b3a;
+  --oxide: #9a2b22;
+  --paper: #fbfbf9;
+  --mist: #eef1f6;
+
+  --background: var(--paper);
+  --foreground: #2c2f4a;
+  --heading: var(--indigo-deep);
+  --card: #ffffff;
+  --card-foreground: #2c2f4a;
+  --popover: #ffffff;
+  --popover-foreground: #2c2f4a;
+  --primary: var(--indigo);
+  --primary-foreground: #ffffff;
+  --secondary: var(--mist);
+  --secondary-foreground: var(--indigo-deep);
+  --muted: var(--mist);
+  --muted-foreground: #5b6079;
+  --accent: #e4e7f3;
+  --accent-foreground: var(--indigo-deep);
+  --destructive: var(--oxide);
+  --success: var(--palm);
+  --border: #d6dae4;
+  --input: #c3c8d6;
+  --ring: var(--oxide);
+  --radius: 0.25rem;
+
+  --chart-1: var(--indigo);
+  --chart-2: #a9b0d6;
+  --chart-3: var(--oxide);
+  --chart-4: var(--palm);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-heading: var(--heading);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-success: var(--success);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-indigo: var(--indigo);
+  --color-indigo-deep: var(--indigo-deep);
+  --color-palm: var(--palm);
+  --color-oxide: var(--oxide);
+  --color-mist: var(--mist);
+  --color-paper: var(--paper);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+
+  --font-sans: var(--font-archivo), system-ui, sans-serif;
+
+  --radius-sm: calc(var(--radius) - 1px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 2px);
+  --radius-xl: calc(var(--radius) + 6px);
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: 5rem;
+  }
+  body {
+    /* iOS 26+ Safari: lets dialog backdrops cover the scrolled viewport (Base UI quick start) */
+    position: relative;
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    font-variant-numeric: tabular-nums;
+    line-height: 1.6;
+  }
+  h1,
+  h2,
+  h3,
+  .font-display {
+    color: var(--heading);
+    font-stretch: 68%;
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  a {
+    text-underline-offset: 3px;
+  }
+  :focus-visible {
+    outline: 3px solid var(--ring);
+    outline-offset: 2px;
+  }
+}
+
+/* Base UI: give the app its own stacking context so dialogs and popovers sit on top. */
+.root {
+  isolation: isolate;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Scroll reveal (components/motion/in-view.tsx) */
+@keyframes reveal {
+  from {
+    opacity: 0;
+    translate: 0 16px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      animation: reveal linear both;
+      animation-timeline: view();
+      animation-range: entry calc(0% + var(--reveal-delay, 0%)) entry calc(55% + var(--reveal-delay, 0%));
+    }
+  }
+}
+
+/* Hero flow lines (components/effects/flow-lines.tsx) */
+@keyframes flow-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes flow-travel {
+  from {
+    stroke-dashoffset: 1.15;
+  }
+  to {
+    stroke-dashoffset: -0.15;
+  }
+}
+.flow-base {
+  stroke-dasharray: 1;
+  animation: flow-draw 1.6s ease-in-out both;
+}
+.flow-light {
+  stroke-dasharray: 0.12 1.2;
+  stroke-dashoffset: 1.15;
+  opacity: 0.85;
+  animation: flow-travel 8s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .flow-light {
+    display: none;
+  }
+}
