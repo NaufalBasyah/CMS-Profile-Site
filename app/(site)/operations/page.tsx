@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { connection } from "next/server";
 import { Suspense } from "react";
-import { Cta, Figure, PageFallback, PageHero, Section, SectionHead } from "@/components/site/blocks";
+import { Cta, PageFallback, PageHero, Section, SectionHead } from "@/components/site/blocks";
+import { BusinessScope, ValueChain } from "@/components/site/diagrams";
 import { getAdvantages } from "@/lib/content";
 
 export const metadata: Metadata = {
@@ -18,43 +19,31 @@ export default function OperationsPage() {
           world&apos;s major chemical companies.
         </p>
       </PageHero>
-      <Section>
-        <div className="grid items-center gap-12 lg:grid-cols-2">
-          <div>
-            <h2 className="text-4xl sm:text-5xl">From stearic acid to export</h2>
-            <p className="mt-4 text-lg">
+      <Section labelledBy="scope-title">
+        <div className="mb-12 grid gap-6 lg:grid-cols-2 lg:items-end">
+          <h2 id="scope-title" className="text-4xl sm:text-5xl">From stearic acid to export</h2>
+          <div className="space-y-4 text-lg">
+            <p>
               We buy stearic acid from major mills in Indonesia, convert it to E.B.S. through our in-house chemical
               reaction process, and export HI-LUB to global chemical companies.
             </p>
-            <p className="mt-4 text-lg">
+            <p>
               Because the whole chain from plantation to stearic acid sits within North Sumatra, our raw material travels
               a short distance and supply stays steady.
             </p>
           </div>
-          <Figure
-            src="/img/business-scope.jpg"
-            alt="Process diagram: plantation, oil palm mills, crude palm oil, refining to stearic acid, reaction at the CMS plant, HI-LUB export by ship"
-            width={780}
-            height={461}
-          />
         </div>
+        <BusinessScope />
       </Section>
-      <Section tone="mist">
-        <div className="grid items-center gap-12 lg:grid-cols-2">
-          <div>
-            <h2 className="text-4xl sm:text-5xl">Stearic acid, our raw material</h2>
-            <p className="mt-4 text-lg">
-              Our main raw material is stearic acid, an oleochemical product three steps downstream from crude palm oil.
-              It is produced by refining and fractionating palm oil and palm kernel oil.
-            </p>
-          </div>
-          <Figure
-            src="/img/value-chain.jpg"
-            alt="Palm oil value chain from fresh fruit bunches through CPO and PKO, refining and fractionation, to downstream oleochemicals"
-            width={1038}
-            height={614}
-          />
+      <Section labelledBy="chain-title">
+        <div className="mb-12 grid gap-6 lg:grid-cols-2 lg:items-end">
+          <h2 id="chain-title" className="text-4xl sm:text-5xl">Stearic acid, our raw material</h2>
+          <p className="text-lg">
+            Our main raw material is stearic acid, an oleochemical product three steps downstream from crude palm oil. It
+            is produced by refining and fractionating palm oil and palm kernel oil.
+          </p>
         </div>
+        <ValueChain />
       </Section>
       <Suspense fallback={<PageFallback />}>
         <Advantages />
@@ -68,7 +57,7 @@ async function Advantages() {
   await connection();
   const advantages = await getAdvantages();
   return (
-    <Section>
+    <Section tone="mist">
       <SectionHead title="Advantages of making E.B.S. in Medan" />
       <ul className="grid gap-x-12 gap-y-10 md:grid-cols-2">
         {advantages.map((a) => (
