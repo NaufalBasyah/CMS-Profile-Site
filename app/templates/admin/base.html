@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Admin{% endblock %} | CMS Chem admin</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="/static/img/logo.png">
+  <link rel="stylesheet" href="/static/css/admin.css?v=1">
+</head>
+<body>
+<div class="layout">
+  <aside class="side">
+    <a class="brand" href="/admin"><img src="/static/img/logo.png" alt="">CMS Chem admin</a>
+    <a href="/admin" class="{{ 'on' if request.url.path == '/admin' }}">Dashboard</a>
+    <a href="/admin/inquiries" class="{{ 'on' if request.url.path.startswith('/admin/inquiries') }}">Inquiries</a>
+    <a href="/admin/settings" class="{{ 'on' if request.url.path.startswith('/admin/settings') }}">Site settings</a>
+    <h4>Content</h4>
+    {% for k, sec in sections.items() %}
+    <a href="/admin/{{ k }}" class="{{ 'on' if request.url.path.startswith('/admin/' ~ k) }}">{{ sec.label }}</a>
+    {% endfor %}
+    <h4>Account</h4>
+    <a href="/" target="_blank" rel="noopener">View website</a>
+    <a href="/admin/account" class="{{ 'on' if request.url.path.startswith('/admin/account') }}">Change password</a>
+    <form method="post" action="/admin/logout"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="btn btn--link">Log out</button></form>
+  </aside>
+  <main class="main">
+    {% if flash %}<div class="flash" role="status">{{ flash }}</div>{% endif %}
+    {% block content %}{% endblock %}
+  </main>
+</div>
+</body>
+</html>

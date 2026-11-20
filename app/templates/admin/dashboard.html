@@ -1,0 +1,21 @@
+{% extends "admin/base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="top"><h1>Dashboard</h1><a class="btn btn--ghost" href="/" target="_blank" rel="noopener">View website</a></div>
+{% if default_password %}<div class="warn"><strong>You're still using the default password.</strong> <a href="/admin/account">Change it now</a> before sharing the site.</div>{% endif %}
+<div class="panel">
+  <h2>Inquiries</h2>
+  {% if recent %}
+  <p>{{ new_inquiries }} new. <a href="/admin/inquiries">See all inquiries</a></p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Received</th><th>Company</th><th>Interest</th><th>Status</th></tr></thead>
+    <tbody>{% for i in recent %}<tr><td>{{ i.created_at.strftime('%-d %b %Y %H:%M') }}</td><td><a href="/admin/inquiries/{{ i.id }}">{{ i.company }}</a></td><td>{{ i.interest }}</td><td><span class="status status--{{ i.status }}">{{ i.status }}</span></td></tr>{% endfor %}</tbody>
+  </table></div>
+  {% else %}<p class="muted">No inquiries yet. They'll appear here when someone sends the partnership form.</p>{% endif %}
+</div>
+<h2>Content</h2>
+<div class="stats">
+  <a href="/admin/settings"><b>Settings</b>Company details and page text</a>
+  {% for k, sec in sections.items() %}<a href="/admin/{{ k }}"><b>{{ counts[k] }}</b>{{ sec.label }}</a>{% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+# Render Blueprint: one web service plus one Postgres database.
+# In Render: New > Blueprint > pick this repo. Render reads this file.
+services:
+  - type: web
+    name: cms-profile-site
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT --proxy-headers --forwarded-allow-ips="*"
+    healthCheckPath: /healthz
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.7
+      - key: SECRET_KEY
+        generateValue: true
+      - key: HTTPS_ONLY
+        value: "1"
+      - key: ADMIN_USERNAME
+        value: admin
+      - key: ADMIN_PASSWORD
+        sync: false   # Render asks you to type it when you create the Blueprint
+      - key: DATABASE_URL
+        fromDatabase:
+          name: cms-profile-db
+          property: connectionString
+
+databases:
+  - name: cms-profile-db
+    plan: free

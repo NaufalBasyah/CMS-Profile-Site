@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Markets and customers{% endblock %}
+{% block content %}
+<section class="page-hero">
+  <div class="wrap">
+    <h1>Markets and customers</h1>
+    <p class="lead">China, Taiwan and South Korea are our major markets and make up more than 90% of annual sales. We supply leading chemical companies across Asia through long-standing relationships.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap split">
+    <div>
+      <h2>Where our sales go</h2>
+      <p class="muted">Approximate share of annual sales by country.</p>
+    </div>
+    <ul class="share">
+      {% set top = markets|map(attribute='share_pct')|max if markets else 1 %}
+      {% for m in markets %}
+      <li><span>{{ m.country }}</span><span class="bar" aria-hidden="true"><i style="width: {{ (m.share_pct / top * 100)|round(1) }}%"></i></span><b>{{ m.share_pct|num(1 if m.share_pct < 2 else 0) }}%</b></li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+
+<section class="section section--mist">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Main clients</h2>
+      <p class="muted">Global chemical companies we have supplied over the long term.</p>
+    </div>
+    <ul class="clients">
+      {% for c in clients %}<li><strong>{{ c.name }}</strong><span>{{ c.country }}{% if c.sector %}, {{ c.sector }}{% endif %}</span></li>{% endfor %}
+    </ul>
+  </div>
+</section>
+{% endblock %}
