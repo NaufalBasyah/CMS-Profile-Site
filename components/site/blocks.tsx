@@ -28,7 +28,7 @@ export function Section({
     <section
       id={id}
       aria-labelledby={labelledBy}
-      className={cn("py-16 sm:py-20 lg:py-24", tone === "mist" && "bg-mist", className)}
+      className={cn("overflow-x-clip py-16 sm:py-20 lg:py-24", tone === "mist" && "bg-mist", className)}
     >
       <Container>{children}</Container>
     </section>

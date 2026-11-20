@@ -245,7 +245,7 @@ export function PhotoGallery({
         ref={track}
         tabIndex={0}
         aria-label={`${label}: scroll or use the arrow keys`}
-        className="gallery-track -mx-4 flex snap-x snap-mandatory scroll-px-4 gap-4 overflow-x-auto overscroll-x-contain px-4 pb-2 outline-offset-4 sm:-mx-6 sm:scroll-px-6 sm:gap-6 sm:px-6"
+        className="gallery-track -ml-4 mr-[calc(50%-50vw)] flex snap-x snap-mandatory scroll-px-4 gap-4 overflow-x-auto overscroll-x-contain pb-2 pl-4 pr-[calc(50vw-50%)] outline-offset-4 sm:-ml-6 sm:scroll-px-6 sm:gap-6 sm:pl-6"
       >
         {photos.map((p, i) => (
           <li
@@ -253,7 +253,7 @@ export function PhotoGallery({
             role="group"
             aria-roledescription="slide"
             aria-label={`${i + 1} of ${count}`}
-            className="group/slide shrink-0 basis-[85%] snap-start sm:basis-[60%] lg:basis-[calc((100%-3rem)/2.4)]"
+            className="group/slide shrink-0 basis-[calc((100vw-2rem)*0.85)] snap-start sm:basis-[calc((100vw-3rem)*0.6)] lg:basis-[calc((min(100vw-3rem,69rem)-3rem)/2.4)]"
           >
             <figure className="m-0">
               <div className="relative aspect-[16/10] overflow-hidden rounded-lg border bg-mist">
