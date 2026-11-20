@@ -74,7 +74,7 @@ export const APPLICATION_PHOTOS: Photo[] = [
 
 /** About: the joint venture over the years. */
 export const COMPANY_PHOTOS: Photo[] = [
-  sample("co-1999", "The joint venture signing in 1999"),
+  sample("co-meeting", "The joint venture signing in 1999"),
   sample("co-team", "The Medan team in front of the plant"),
   sample("co-visit", "Partners from Korea visiting the plant"),
   sample("co-training", "Safety training on the production floor"),
