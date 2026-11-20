@@ -23,7 +23,7 @@ type SettingRow = [key: string, label: string, group: string, kind: "text" | "te
 
 export const SETTINGS: SettingRow[] = [
   ["company_name", "Company name", "Company", "text", "PT. Choyang Mopoli Samsung Chemical Indonesia"],
-  ["short_name", "Short name", "Company", "text", "PT. CMS Chem Indonesia"],
+  ["short_name", "Short name", "Company", "text", "PT. CMS Chemical Indonesia"],
   ["tagline", "Tagline", "Company", "text", "Ethylene bis stearamide from Sumatran palm oil"],
   ["founded", "Year founded", "Company", "text", "1999"],
   ["location", "Location", "Company", "text", "Medan, North Sumatra, Indonesia"],

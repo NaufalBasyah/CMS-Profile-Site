@@ -15,16 +15,16 @@ const siteUrl = process.env.SITE_URL || "http://localhost:3000";
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "PT. CMS Chem Indonesia | E.B.S. manufacturer from Indonesia",
-    template: "%s | PT. CMS Chem Indonesia",
+    default: "PT. CMS Chemical Indonesia | E.B.S. manufacturer from Indonesia",
+    template: "%s | PT. CMS Chemical Indonesia",
   },
   description:
     "Indonesia's first ethylene bis stearamide (E.B.S.) manufacturer. HI-LUB beads and powders from Sumatran palm-based stearic acid for resin producers across Asia.",
   icons: { icon: "/img/logo.png" },
   openGraph: {
     type: "website",
-    siteName: "PT. CMS Chem Indonesia",
-    images: [{ url: "/img/factory.jpg", width: 1287, height: 484, alt: "The CMS Chem plant in Medan" }],
+    siteName: "PT. CMS Chemical Indonesia",
+    images: [{ url: "/img/factory.jpg", width: 1287, height: 484, alt: "The CMS Chemical plant in Medan" }],
   },
 };
 
