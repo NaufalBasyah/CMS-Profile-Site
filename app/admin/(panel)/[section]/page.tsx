@@ -1,8 +1,7 @@
-import { PlusIcon } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ListActions } from "@/components/admin/excel";
 import { PageHead } from "@/components/admin/page-head";
-import { buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { isSectionKey, SECTION_DEFS } from "@/lib/admin/fields";
@@ -27,11 +26,7 @@ export default async function SectionList({ params }: PageProps<"/admin/[section
     <>
       <PageHead
         title={def.label}
-        action={
-          <Link href={`/admin/${section}/new`} className={cn(buttonVariants(), "no-underline")}>
-            <PlusIcon /> Add {def.singular}
-          </Link>
-        }
+        action={<ListActions section={section} add={def.singular} />}
       >
         {"help" in def ? def.help : null}
       </PageHead>

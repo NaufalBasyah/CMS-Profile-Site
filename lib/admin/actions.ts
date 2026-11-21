@@ -13,6 +13,7 @@ import { hashPassword, verifyPassword } from "@/lib/auth/password";
 import { createSession, destroySession, requireUser } from "@/lib/auth/session";
 import { CONTENT } from "@/lib/content";
 import { getDb, schema as t } from "@/lib/db";
+import { excelMapping, isExcelKey, naturalKey, parseWorkbook } from "./excel";
 import { isSectionKey, SECTION_DEFS, type Field } from "./fields";
 import { SECTION_TABLES } from "./sections";
 
@@ -146,6 +147,106 @@ export async function deleteItem(key: string, id: number) {
   const s = SECTION_DEFS[key].singular;
   await flash(`${s[0].toUpperCase()}${s.slice(1)} deleted.`);
   redirect(`/admin/${key}`);
+}
+
+/* ---------- Excel import ---------- */
+
+export type ImportState = { error?: string; problems?: string[] };
+
+const MAX_IMPORT = 3.5 * 1024 * 1024;
+
+/**
+ * Imports a filled template or an edited export. All rows are checked first; if any
+ * has a problem nothing is saved. Then everything is written in one transaction.
+ * Bound in the form: importItems.bind(null, key).
+ */
+export async function importItems(key: string, _prev: ImportState, form: FormData): Promise<ImportState> {
+  await requireUser(`/admin/${key}/import`);
+  if (!isExcelKey(key)) return { error: "Unknown section." };
+  const file = form.get("file");
+  const mode = form.get("mode") === "replace" ? "replace" : "merge";
+  if (!(file instanceof File) || file.size === 0) return { error: "Choose the Excel file to import." };
+  if (!/\.xlsx$/i.test(file.name)) return { error: "Upload an .xlsx file. In Excel, use File › Save As › Excel Workbook." };
+  if (file.size > MAX_IMPORT) return { error: "Use a file smaller than 3.5 MB." };
+  if (mode === "replace" && form.get("confirmReplace") !== "on") {
+    return { error: "Tick the box to confirm you want to replace everything in this section." };
+  }
+
+  const { rows, errors } = await parseWorkbook(key, await file.arrayBuffer());
+  if (errors.length) {
+    return {
+      error: `Nothing was imported. Fix ${errors.length === 1 ? "this problem" : `these ${errors.length} problems`} in the file and upload it again.`,
+      problems: errors.slice(0, 100),
+    };
+  }
+
+  const { table, singular, label } = excelMapping(key);
+  const natural = naturalKey(key);
+  const db = await getDb();
+  let added = 0;
+  let updated = 0;
+  let removed = 0;
+  try {
+    await db.transaction(async (tx) => {
+      const existing = (await tx.select().from(table)) as Record<string, unknown>[];
+      if (mode === "replace") {
+        removed = existing.length;
+        await tx.delete(table);
+      }
+      const byId = new Map(mode === "replace" ? [] : existing.map((r) => [Number(r.id), r]));
+      const byNatural = new Map<string, number>();
+      if (natural && mode === "merge") {
+        for (const r of existing) {
+          const k = natural.of(r);
+          if (k !== null) byNatural.set(k, Number(r.id));
+        }
+      }
+      const missing: string[] = [];
+      for (const r of rows) {
+        let target: number | null = null;
+        if (mode === "merge" && r.id !== null) {
+          if (!byId.has(r.id)) {
+            missing.push(`Row ${r.line}: there is no ${singular} with ID ${r.id}. Clear the ID to add it as new.`);
+            continue;
+          }
+          target = r.id;
+        } else if (natural) {
+          const k = natural.of(r.values);
+          if (k !== null && byNatural.has(k)) target = byNatural.get(k)!;
+        }
+        if (target !== null) {
+          await tx.update(table).set(r.values as never).where(eq(table.id, target));
+          updated++;
+        } else {
+          await tx.insert(table).values(r.values as never);
+          added++;
+        }
+      }
+      if (missing.length) throw new ImportProblems(missing);
+    });
+  } catch (err) {
+    if (err instanceof ImportProblems) {
+      return { error: "Nothing was imported. Fix these rows and upload the file again.", problems: err.problems.slice(0, 100) };
+    }
+    const msg = String((err as { cause?: { message?: string } })?.cause?.message ?? err);
+    console.error(err);
+    if (/unique|duplicate/i.test(msg)) {
+      return { error: `Nothing was imported: two ${label.toLowerCase()} would share the same ${natural?.label.toLowerCase() ?? "value"}.` };
+    }
+    return { error: "Nothing was imported because saving failed. Try again." };
+  }
+
+  if (key !== "inquiries") updateTag(CONTENT);
+  const parts = [`${added} added`, `${updated} updated`];
+  if (removed) parts.unshift(`${removed} removed`);
+  await flash(`Import finished: ${parts.join(", ")}.`);
+  redirect(`/admin/${key}`);
+}
+
+class ImportProblems extends Error {
+  constructor(public problems: string[]) {
+    super("import problems");
+  }
 }
 
 /* ---------- settings ---------- */

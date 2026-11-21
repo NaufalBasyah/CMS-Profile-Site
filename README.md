@@ -4,6 +4,7 @@ Company website for **PT. Choyang Mopoli Samsung Chemical Indonesia** (PT. CMS C
 
 - **Public site:** Home, About, Products (HI-LUB grades), Operations, Performance, Markets, News, Partnership (inquiry form)
 - **Admin panel:** `/admin`. Edit company details, products, history, clients, news and the Performance figures; read inquiries from the website.
+- **Excel import and export:** every admin list except Site settings has *Export to Excel* and *Import from Excel*. The import page offers a template with the right columns, dropdowns and a "How to fill" sheet. Imports check every row first and save nothing if any row has a problem.
 
 Built with **Next.js 16** (App Router, React 19, TypeScript), **Tailwind CSS v4**, **Base UI** components in the shadcn/ui style, **Motion**, **Recharts** and **Drizzle ORM** on Postgres (Supabase in production).
 
@@ -54,7 +55,7 @@ components/
 lib/
   db/                Tables (schema.ts, ddl.ts), connection (index.ts), first-run content (seed.ts)
   content.ts         Cached reads for the public site
-  admin/             Admin sections (fields.ts) and save/delete actions (actions.ts)
+  admin/             Admin sections (fields.ts), save/delete/import actions (actions.ts), Excel templates (excel.ts)
   auth/              Passwords and sign-in sessions
 proxy.ts             Sends signed-out visitors from /admin to the login page
 render.yaml          Deployment recipe for Render
