@@ -1,5 +1,6 @@
 import { desc } from "drizzle-orm";
 import Link from "next/link";
+import { ListActions } from "@/components/admin/excel";
 import { PageHead } from "@/components/admin/page-head";
 import { StatusBadge } from "@/components/admin/status-badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -17,7 +18,7 @@ export default async function InquiriesPage() {
   const rows = await db.select().from(t.inquiries).orderBy(desc(t.inquiries.createdAt));
   return (
     <>
-      <PageHead title="Inquiries">Messages sent from the partnership form.</PageHead>
+      <PageHead title="Inquiries" action={<ListActions section="inquiries" />}>Messages sent from the partnership form.</PageHead>
       {rows.length === 0 ? (
         <p className="rounded-lg border bg-card p-6 text-muted-foreground">No inquiries yet.</p>
       ) : (

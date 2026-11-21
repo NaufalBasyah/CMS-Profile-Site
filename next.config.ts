@@ -5,8 +5,9 @@ const nextConfig: NextConfig = {
   // refresh it with updateTag (see lib/content.ts and lib/admin/actions.ts).
   cacheComponents: true,
   partialPrefetching: true,
-  // PGlite (the local fallback database) ships WebAssembly files that must not be bundled.
-  serverExternalPackages: ["@electric-sql/pglite"],
+  // PGlite (the local fallback database) ships WebAssembly files that must not be bundled;
+  // exceljs (admin Excel import/export) runs as plain Node code too.
+  serverExternalPackages: ["@electric-sql/pglite", "exceljs"],
   experimental: {
     // Image uploads in the admin panel are capped at 3 MB; leave room for the form fields.
     serverActions: { bodySizeLimit: "4mb" },
